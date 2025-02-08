@@ -2,9 +2,19 @@ import socket
 import threading
 import time
 import argparse
+import sys
 
 # Global variables for tracking packets sent
 packets_sent = 0
+
+# Function to resolve hostname to IP address
+def resolve_hostname(hostname):
+    try:
+        ip = socket.gethostbyname(hostname)
+        return ip
+    except socket.gaierror as e:
+        print(f"Error resolving hostname: {e}")
+        sys.exit(1)
 
 # Function to send packets
 def send_packets(target_ip, target_port, packets_per_second, stop_event):
@@ -35,8 +45,8 @@ def parse_arguments():
 def main():
     args = parse_arguments()
 
-    # Extract target IP and port
-    target_ip = args.target
+    # Resolve the target hostname to an IP address
+    target_ip = resolve_hostname(args.target)
     target_port = args.port
 
     # Create a stop event to control the threads
